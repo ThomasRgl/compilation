@@ -1,0 +1,27 @@
+let
+    /* Read a positive integer from the standard input.
+       Returns -1 on error */
+    function read_unsigned() : int =
+    let
+        var tmp := ""
+        var buffer := 0
+        var res := 0
+    in
+        tmp := getchar();
+        while (tmp <> "" & tmp <> "\n") do (
+            buffer := ord(tmp);
+            if (buffer >= ord("0") & buffer <= ord("9")) then
+                res := res * 10 + buffer - ord("0")
+            else (
+                res := -1;
+                break
+            );
+            tmp := getchar()
+        );
+        res
+    end
+    var a : int := read_unsigned()
+  in
+    print_int(a*2);
+    print("\n")
+  end
