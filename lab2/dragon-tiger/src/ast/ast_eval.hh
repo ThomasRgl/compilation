@@ -44,8 +44,9 @@ public:
   virtual int32_t visit(const ForLoop &);
   virtual int32_t visit(const Break &);
   virtual int32_t visit(const Assign &);
+  virtual ~ASTEval(){}
 };
 
 } // namespace ast
 
-#endif // _AST_DUMPER_HH
+#endif // _AST_EVAL_HH

@@ -1,8 +1,9 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 
-#include "../ast/ast_eval.hh"
+
 #include "../ast/ast_dumper.hh"
+#include "../ast/ast_eval.hh"
 #include "../parser/parser_driver.hh"
 #include "../utils/errors.hh"
 
@@ -56,7 +57,7 @@ int main(int argc, char **argv) {
   }
   else if (vm.count("eval")) {
     ast::ASTEval eval(&std::cout, vm.count("verbose") > 0);
-    parser_driver.result_ast->accept(eval);
+    std::cout << parser_driver.result_ast->accept(eval);
     eval.nl();
   }
 

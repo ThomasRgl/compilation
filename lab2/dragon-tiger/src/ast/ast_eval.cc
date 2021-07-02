@@ -16,44 +16,47 @@ int32_t ASTEval::visit(const StringLiteral &literal) {
 }
 
 int32_t ASTEval::visit(const BinaryOperator &binop) {
+    auto binop_left = binop.get_left().accept(*this);
+    auto binop_right = binop.get_right().accept(*this);
+    
     switch (binop.op){
         case o_plus:
-            return binop.get_left().accept(*this) + binop.get_right().accept(*this);
+            return binop_left + binop_right;
         case o_minus:
-            return binop.get_left().accept(*this) - binop.get_right().accept(*this);
+            return binop_left - binop_right;
         case o_times:
-            return binop.get_left().accept(*this) * binop.get_right().accept(*this);
+            return binop_left * binop_right;
         case o_divide:
-            if( binop.get_right().accept(*this) == 0)
+            if( binop_right == 0)
                 utils::error("cannot divide by zero");
-            return binop.get_left().accept(*this) / binop.get_right().accept(*this);
+            return binop_left / binop_right;
         case o_eq:
-            if(binop.get_left().accept(*this) == binop.get_right().accept(*this) )
+            if(binop_left == binop_right )
                 return 1;
             else
                 return 0;
         case o_neq:
-            if(binop.get_left().accept(*this) != binop.get_right().accept(*this) )
+            if(binop_left != binop_right )
                 return 1;
             else
                 return 0;
         case o_lt:
-            if(binop.get_left().accept(*this) < binop.get_right().accept(*this) )
+            if(binop_left < binop_right )
                 return 1;
             else
                 return 0;
         case o_le:
-            if(binop.get_left().accept(*this) <= binop.get_right().accept(*this) )
+            if(binop_left <= binop_right )
                 return 1;
             else
                 return 0;
         case o_gt:
-            if(binop.get_left().accept(*this) > binop.get_right().accept(*this) )
+            if(binop_left > binop_right )
                 return 1;
             else
                 return 0;
         case o_ge:
-            if(binop.get_left().accept(*this) >= binop.get_right().accept(*this) )
+            if(binop_left >= binop_right )
                 return 1;
             else
                 return 0;
@@ -65,8 +68,10 @@ int32_t ASTEval::visit(const BinaryOperator &binop) {
 
 int32_t ASTEval::visit(const Sequence &seqExpr) {
 
+    int32_t _int32_ = 0;
     const auto exprs = seqExpr.get_exprs();
-    int32_t _int_ ;
+    if( exprs.cbegin() == exprs.cend())
+        utils::error("empty expressions are not supported");
     for (auto expr = exprs.cbegin(); expr != exprs.cend(); expr++) {
         _int32_ = (*expr)->accept(*this);
     }
