@@ -150,8 +150,27 @@ void Binder::visit(Sequence &seq) {
 void Binder::visit(Let &let) {
     push_scope();
     std::cout << "Let" << std::endl ;
-    for (auto decl : let.get_decls())
-        decl->accept(*this);
+
+    std::vector<Decl *> decls;
+    for (auto decl : let.get_decls()){
+
+        if(dynamic_cast<FunDecl*> (decl) ){
+            enter(*decl);
+            std::cout << "hello" << std::endl ;
+            decls.push_back(decl);
+        }
+        else{
+            for (auto funDecl : decls)
+                funDecl->accept(*this);
+            decls.clear();
+            decl->accept(*this);
+        }
+    }
+
+    for (auto funDecl : decls){ //if the decls vector is not empty
+        funDecl->accept(*this);
+    }
+
     std::cout << "IN" << std::endl ;
     const auto exprs = let.get_sequence().get_exprs();
     for (auto expr = exprs.cbegin(); expr != exprs.cend(); expr++)
@@ -188,7 +207,7 @@ void Binder::visit(VarDecl &decl) {
 void Binder::visit(FunDecl &decl) {
     std::cout << "FunDecl" << std::endl ;
 
-    enter(decl);
+    //enter(decl);
 
     push_scope();
     set_parent_and_external_name(decl);
