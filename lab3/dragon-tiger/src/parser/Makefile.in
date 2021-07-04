@@ -88,7 +88,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src/ast
+subdir = src/parser
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ac_prog_bison.m4 \
 	$(top_srcdir)/m4/ax_boost_base.m4 \
@@ -109,11 +109,11 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libast_a_AR = $(AR) $(ARFLAGS)
-libast_a_LIBADD =
-am_libast_a_OBJECTS = ast_dumper.$(OBJEXT) binder.$(OBJEXT) \
-	ast_eval.$(OBJEXT)
-libast_a_OBJECTS = $(am_libast_a_OBJECTS)
+libparser_a_AR = $(AR) $(ARFLAGS)
+libparser_a_LIBADD =
+am_libparser_a_OBJECTS = tiger_parser.$(OBJEXT) tiger_lexer.$(OBJEXT) \
+	parser_driver.$(OBJEXT)
+libparser_a_OBJECTS = $(am_libparser_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -129,8 +129,8 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/ast_dumper.Po \
-	./$(DEPDIR)/ast_eval.Po ./$(DEPDIR)/binder.Po
+am__depfiles_remade = ./$(DEPDIR)/parser_driver.Po \
+	./$(DEPDIR)/tiger_lexer.Po ./$(DEPDIR)/tiger_parser.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -145,6 +145,19 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
+LEXCOMPILE = $(LEX) $(AM_LFLAGS) $(LFLAGS)
+AM_V_LEX = $(am__v_LEX_@AM_V@)
+am__v_LEX_ = $(am__v_LEX_@AM_DEFAULT_V@)
+am__v_LEX_0 = @echo "  LEX     " $@;
+am__v_LEX_1 = 
+YLWRAP = $(top_srcdir)/ylwrap
+am__yacc_c2h = sed -e s/cc$$/hh/ -e s/cpp$$/hpp/ -e s/cxx$$/hxx/ \
+		   -e s/c++$$/h++/ -e s/c$$/h/
+YACCCOMPILE = $(YACC) $(AM_YFLAGS) $(YFLAGS)
+AM_V_YACC = $(am__v_YACC_@AM_V@)
+am__v_YACC_ = $(am__v_YACC_@AM_DEFAULT_V@)
+am__v_YACC_0 = @echo "  YACC    " $@;
+am__v_YACC_1 = 
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 AM_V_CC = $(am__v_CC_@AM_V@)
@@ -157,8 +170,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libast_a_SOURCES)
-DIST_SOURCES = $(libast_a_SOURCES)
+SOURCES = $(libparser_a_SOURCES)
+DIST_SOURCES = $(libparser_a_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -183,7 +196,8 @@ am__define_uniq_tagged_files = \
   done | $(am__uniquify_input)`
 ETAGS = etags
 CTAGS = ctags
-am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp
+am__DIST_COMMON = $(srcdir)/Makefile.in $(top_srcdir)/depcomp \
+	$(top_srcdir)/ylwrap tiger_lexer.cc tiger_parser.cc
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
@@ -299,13 +313,17 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libast.a
-libast_a_SOURCES = ast_dumper.cc binder.cc ast_dumper.hh binder.hh nodes.hh ast_eval.cc ast_eval.hh
+AM_YFLAGS = -v --report-file=bison-report.txt --graph=bison-graph.gv -Wno-yacc
+AM_LFLAGS = -otiger_lexer.cc
+noinst_LIBRARIES = libparser.a
+libparser_a_SOURCES = tiger_parser.yy tiger_lexer.ll parser_driver.cc parser_driver.hh
 AM_CXXFLAGS = -pedantic -Wall
+EXTRA_DIST = tiger_parser.hh tiger_parser.cc tiger_lexer.cc location.hh stack.hh position.hh
+CLEANFILES = tiger_parser.hh tiger_parser.cc tiger_lexer.cc location.hh stack.hh position.hh
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .o .obj
+.SUFFIXES: .cc .ll .o .obj .yy
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -315,9 +333,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/ast/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign src/parser/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --foreign src/ast/Makefile
+	  $(AUTOMAKE) --foreign src/parser/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -339,10 +357,10 @@ $(am__aclocal_m4_deps):
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-libast.a: $(libast_a_OBJECTS) $(libast_a_DEPENDENCIES) $(EXTRA_libast_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libast.a
-	$(AM_V_AR)$(libast_a_AR) libast.a $(libast_a_OBJECTS) $(libast_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libast.a
+libparser.a: $(libparser_a_OBJECTS) $(libparser_a_DEPENDENCIES) $(EXTRA_libparser_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libparser.a
+	$(AM_V_AR)$(libparser_a_AR) libparser.a $(libparser_a_OBJECTS) $(libparser_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libparser.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -350,9 +368,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ast_dumper.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ast_eval.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/binder.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parser_driver.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiger_lexer.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tiger_parser.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -375,6 +393,12 @@ am--depfiles: $(am__depfiles_remade)
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
+
+.ll.cc:
+	$(AM_V_LEX)$(am__skiplex) $(SHELL) $(YLWRAP) $< $(LEX_OUTPUT_ROOT).c $@ -- $(LEXCOMPILE)
+
+.yy.cc:
+	$(AM_V_YACC)$(am__skipyacc) $(SHELL) $(YLWRAP) $< y.tab.c $@ y.tab.h `echo $@ | $(am__yacc_c2h)` y.output $*.output -- $(YACCCOMPILE)
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
@@ -487,6 +511,7 @@ install-strip:
 mostlyclean-generic:
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-test -z "$(CONFIG_CLEAN_FILES)" || rm -f $(CONFIG_CLEAN_FILES)
@@ -495,14 +520,16 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-rm -f tiger_lexer.cc
+	-rm -f tiger_parser.cc
 clean: clean-am
 
 clean-am: clean-generic clean-noinstLIBRARIES mostlyclean-am
 
 distclean: distclean-am
-		-rm -f ./$(DEPDIR)/ast_dumper.Po
-	-rm -f ./$(DEPDIR)/ast_eval.Po
-	-rm -f ./$(DEPDIR)/binder.Po
+		-rm -f ./$(DEPDIR)/parser_driver.Po
+	-rm -f ./$(DEPDIR)/tiger_lexer.Po
+	-rm -f ./$(DEPDIR)/tiger_parser.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -548,9 +575,9 @@ install-ps-am:
 installcheck-am:
 
 maintainer-clean: maintainer-clean-am
-		-rm -f ./$(DEPDIR)/ast_dumper.Po
-	-rm -f ./$(DEPDIR)/ast_eval.Po
-	-rm -f ./$(DEPDIR)/binder.Po
+		-rm -f ./$(DEPDIR)/parser_driver.Po
+	-rm -f ./$(DEPDIR)/tiger_lexer.Po
+	-rm -f ./$(DEPDIR)/tiger_parser.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

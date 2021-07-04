@@ -1,0 +1,16 @@
+let
+    var a := 0
+    var b := 1
+
+    function k ( n : int ) : int = (
+    n
+    )
+    function even(n : int) : int = if n = 0 then 1 else odd(n-1)
+     function odd(n : int) : int = if n = 0 then 0 else even(n-1)
+in
+    k(a);
+    a := 20;
+    f:=1;
+    for  id := 0 to 5 do id
+
+end

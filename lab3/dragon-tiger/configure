@@ -5996,7 +5996,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/ast/Makefile src/driver/Makefile src/utils/Makefile"
+ac_config_files="$ac_config_files Makefile src/Makefile src/ast/Makefile src/driver/Makefile src/parser/Makefile src/utils/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -6742,6 +6742,7 @@ do
     "src/Makefile") CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
     "src/ast/Makefile") CONFIG_FILES="$CONFIG_FILES src/ast/Makefile" ;;
     "src/driver/Makefile") CONFIG_FILES="$CONFIG_FILES src/driver/Makefile" ;;
+    "src/parser/Makefile") CONFIG_FILES="$CONFIG_FILES src/parser/Makefile" ;;
     "src/utils/Makefile") CONFIG_FILES="$CONFIG_FILES src/utils/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

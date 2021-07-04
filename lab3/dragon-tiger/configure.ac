@@ -22,6 +22,7 @@ AC_CONFIG_FILES([Makefile
                  src/Makefile
                  src/ast/Makefile
                  src/driver/Makefile
+                 src/parser/Makefile
                  src/utils/Makefile
                 ])
 

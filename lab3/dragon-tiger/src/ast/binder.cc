@@ -96,8 +96,11 @@ void Binder::set_parent_and_external_name(FunDecl &decl) {
   if (parent) {
     decl.set_parent(parent);
     external_name = parent->get_external_name().get() + '.' + decl.name.get();
-  } else
+    std::cout << "external name 1: "<< external_name << std::endl ;
+} else{
     external_name = decl.name;
+    std::cout << "external name 2: "<< external_name << std::endl ;
+    }
   while (external_names.find(external_name) != external_names.end())
     external_name = Symbol(external_name.get() + '_');
   external_names.insert(external_name);
@@ -115,53 +118,137 @@ FunDecl *Binder::analyze_program(Expr &root) {
   FunDecl *const main = new FunDecl(utils::nl, Symbol("main"), Symbol("int"),
                                     main_params, main_body, true);
   main->accept(*this);
+  std::cout << "return main" << std::endl ;
   return main;
 }
 
 void Binder::visit(IntegerLiteral &literal) {
+    std::cout << "IntegerLiteral" << std::endl ;
 }
 
 void Binder::visit(StringLiteral &literal) {
+    std::cout << "StringLiteral" << std::endl ;
 }
 
 void Binder::visit(BinaryOperator &op) {
+    std::cout << "BinaryOperator_1" << std::endl ;
+    op.get_left().accept(*this);
+
+    std::cout << "BinaryOperator_2" << std::endl ;
+    op.get_right().accept(*this);
 }
 
 void Binder::visit(Sequence &seq) {
+    std::cout << "Sequence" << std::endl ;
+    const auto exprs = seq.get_exprs();
+    for (auto expr = exprs.cbegin(); expr != exprs.cend(); expr++) {
+        (*expr)->accept(*this);
+    }
 }
 
+
 void Binder::visit(Let &let) {
+    push_scope();
+    std::cout << "Let" << std::endl ;
+    for (auto decl : let.get_decls())
+        decl->accept(*this);
+    std::cout << "IN" << std::endl ;
+    const auto exprs = let.get_sequence().get_exprs();
+    for (auto expr = exprs.cbegin(); expr != exprs.cend(); expr++)
+        (*expr)->accept(*this);
+    std::cout << "END" << std::endl ;
+    pop_scope();
 }
 
 void Binder::visit(Identifier &id) {
+    std::cout << "Identifier" << std::endl ;
+    VarDecl& decl = dynamic_cast<VarDecl&> ( find(id.loc, id.name));
+
+    id.set_decl(&decl);
+
 }
 
 void Binder::visit(IfThenElse &ite) {
+    std::cout << "IF" << std::endl ;
+    ite.get_condition().accept(*this);
+    std::cout << "THEN" << std::endl ;
+    ite.get_then_part().accept(*this);
+    std::cout << "ELSE" << std::endl ;
+    ite.get_else_part().accept(*this);
 }
 
 void Binder::visit(VarDecl &decl) {
+    std::cout << "VarDecl" << std::endl ;
+    enter(decl);
+    if (auto expr = decl.get_expr())
+        expr->accept(*this);
+
 }
 
 void Binder::visit(FunDecl &decl) {
-  set_parent_and_external_name(decl);
-  functions.push_back(&decl);
-  /* ... put your code here ... */
-  functions.pop_back();
+    std::cout << "FunDecl" << std::endl ;
+
+    enter(decl);
+
+    push_scope();
+    set_parent_and_external_name(decl);
+
+    functions.push_back(&decl);
+
+    auto params = decl.get_params();
+    for (auto param = params.cbegin(); param != params.cend(); param++)
+      (*param)->accept(*this);
+
+    decl.get_expr()->accept(*this);
+
+    functions.pop_back();
+    pop_scope();
+
 }
 
 void Binder::visit(FunCall &call) {
+    std::cout << "FunCall" << std::endl ;
+
+    FunDecl& decl = dynamic_cast<FunDecl&> ( find(call.loc, call.func_name));
+    call.set_decl(&decl);
+
+    auto args = call.get_args();
+    for (auto arg = args.cbegin(); arg != args.cend(); arg++) {
+        (*arg)->accept(*this);
+    }
 }
 
 void Binder::visit(WhileLoop &loop) {
+    std::cout << "WhileLoop" << std::endl ;
+    loop.get_condition().accept(*this);
+    std::cout << "DO" << std::endl ;
+    loop.get_body().accept(*this);
 }
 
 void Binder::visit(ForLoop &loop) {
+    std::cout << "ForLoop" << std::endl ;
+    // if (verbose && loop.get_variable().get_escapes())
+    //   *ostream << "/*e*/";
+    // *ostream << " := ";
+    // loop.get_variable().name
+    loop.get_variable().accept(*this);
+
+    std::cout << "TO" << std::endl ;
+    loop.get_high().accept(*this);
+
+    std::cout << "DO" << std::endl ;
+    loop.get_body().accept(*this);
 }
 
 void Binder::visit(Break &b) {
+    std::cout << "Break" << std::endl ;
 }
 
 void Binder::visit(Assign &assign) {
+    std::cout << "Assign left" << std::endl ;
+    assign.get_lhs().accept(*this);
+    std::cout << "Assign right" << std::endl ;
+    assign.get_rhs().accept(*this);
 }
 
 } // namespace binder

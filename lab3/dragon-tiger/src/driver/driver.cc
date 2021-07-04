@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "../ast/ast_dumper.hh"
+#include "../ast/ast_eval.hh"
 #include "../ast/binder.hh"
 #include "../parser/parser_driver.hh"
 #include "../utils/errors.hh"
@@ -14,6 +15,7 @@ int main(int argc, char **argv) {
   options.add_options()
   ("help,h", "describe arguments")
   ("dump-ast", "dump the parsed AST")
+  ("eval,e", "eval the parsed AST")
   ("bind,b", "run the binder on the parsed AST")
   ("trace-parser", "enable parser traces")
   ("trace-lexer", "enable lexer traces")
@@ -52,6 +54,10 @@ int main(int argc, char **argv) {
     main = binder.analyze_program(*parser_driver.result_ast);
   }
 
+  if(vm.count("dump-ast") && vm.count("eval")){
+    utils::error("conflicting options");
+  }
+
   if (vm.count("dump-ast")) {
     ast::ASTDumper dumper(&std::cout, vm.count("verbose") > 0);
     if (main)
@@ -60,6 +66,16 @@ int main(int argc, char **argv) {
       parser_driver.result_ast->accept(dumper);
     dumper.nl();
   }
+
+  if (vm.count("eval")) {
+    ast::ASTEval eval(&std::cout, vm.count("verbose") > 0);
+    if (main)
+      std::cout << main->accept(eval);
+    else
+      std::cout << parser_driver.result_ast->accept(eval);
+    eval.nl();
+  }
+
   delete parser_driver.result_ast;
   return 0;
 }
