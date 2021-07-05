@@ -180,9 +180,16 @@ void Binder::visit(Let &let) {
 }
 
 void Binder::visit(Identifier &id) {
-    std::cout << "Identifier" << std::endl ;
+    std::cout << "Identifier " << std::endl ;
+
     VarDecl& decl = dynamic_cast<VarDecl&> ( find(id.loc, id.name));
 
+    size_t id_scopes = scopes.size();
+    size_t decl_scope = decl.get_depth();
+    if( id_scopes != decl_scope )
+        decl.set_escapes();
+
+    id.set_depth( id_scopes );
     id.set_decl(&decl);
 
 }
@@ -197,8 +204,11 @@ void Binder::visit(IfThenElse &ite) {
 }
 
 void Binder::visit(VarDecl &decl) {
-    std::cout << "VarDecl" << std::endl ;
+    std::cout << "VarDecl" << scopes.size() << std::endl ;
     enter(decl);
+
+    decl.set_depth(scopes.size());
+
     if (auto expr = decl.get_expr())
         expr->accept(*this);
 
@@ -241,7 +251,9 @@ void Binder::visit(WhileLoop &loop) {
     std::cout << "WhileLoop" << std::endl ;
     loop.get_condition().accept(*this);
     std::cout << "DO" << std::endl ;
+    loops.push_back(&loop);
     loop.get_body().accept(*this);
+    loops.pop_back();
 }
 
 void Binder::visit(ForLoop &loop) {
@@ -256,11 +268,17 @@ void Binder::visit(ForLoop &loop) {
     loop.get_high().accept(*this);
 
     std::cout << "DO" << std::endl ;
+    loops.push_back(&loop);
     loop.get_body().accept(*this);
+    loops.pop_back();
 }
 
 void Binder::visit(Break &b) {
     std::cout << "Break" << std::endl ;
+    if(loops.size() != 0)
+        b.set_loop(loops.back());
+    else
+        error("break is used outside a loop");
 }
 
 void Binder::visit(Assign &assign) {
