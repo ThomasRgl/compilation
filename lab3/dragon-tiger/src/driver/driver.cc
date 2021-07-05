@@ -4,6 +4,7 @@
 #include "../ast/ast_dumper.hh"
 #include "../ast/ast_eval.hh"
 #include "../ast/binder.hh"
+#include "../ast/type_checker.hh"
 #include "../parser/parser_driver.hh"
 #include "../utils/errors.hh"
 
@@ -49,17 +50,24 @@ int main(int argc, char **argv) {
     utils::error("parser failed");
   }
 
+
+  if( (vm.count("dump-ast") && vm.count("eval")) || (vm.count("type") && vm.count("eval")) ){
+    utils::error("conflicting options");
+  }
+
+
   FunDecl *main = nullptr;
-  if (vm.count("bind")) {
+  if (vm.count("bind") || vm.count("type")) {
     ast::binder::Binder binder;
     main = binder.analyze_program(*parser_driver.result_ast);
   }
 
-  if(vm.count("dump-ast") && vm.count("eval")){
-    utils::error("conflicting options");
+  if (vm.count("type")) {
+    ast::type_checker::TypeChecker typeChecker;
+    main->accept(typeChecker);
   }
 
-  if (vm.count("dump-ast")) {
+  if (vm.count("dump-ast") ) {
     ast::ASTDumper dumper(&std::cout, vm.count("verbose") > 0);
     if (main)
       main->accept(dumper);

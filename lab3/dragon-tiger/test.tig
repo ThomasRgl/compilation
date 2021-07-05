@@ -1,8 +1,5 @@
 let
-
-
+  function odd(n : int) : int = if n = 0 then 0 else 5
 in
-   while(1)
-   do
-    break
+  print_int(odd(5))
 end

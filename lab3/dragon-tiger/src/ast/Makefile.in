@@ -112,7 +112,7 @@ am__v_AR_1 =
 libast_a_AR = $(AR) $(ARFLAGS)
 libast_a_LIBADD =
 am_libast_a_OBJECTS = ast_dumper.$(OBJEXT) binder.$(OBJEXT) \
-	ast_eval.$(OBJEXT)
+	type_checker.$(OBJEXT) ast_eval.$(OBJEXT)
 libast_a_OBJECTS = $(am_libast_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -130,7 +130,8 @@ DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
 am__depfiles_remade = ./$(DEPDIR)/ast_dumper.Po \
-	./$(DEPDIR)/ast_eval.Po ./$(DEPDIR)/binder.Po
+	./$(DEPDIR)/ast_eval.Po ./$(DEPDIR)/binder.Po \
+	./$(DEPDIR)/type_checker.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -300,7 +301,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libast.a
-libast_a_SOURCES = ast_dumper.cc binder.cc ast_dumper.hh binder.hh type_checker.hh nodes.hh ast_eval.cc ast_eval.hh
+libast_a_SOURCES = ast_dumper.cc binder.cc ast_dumper.hh binder.hh type_checker.hh type_checker.cc nodes.hh ast_eval.cc ast_eval.hh
 AM_CXXFLAGS = -pedantic -Wall
 all: all-am
 
@@ -353,6 +354,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ast_dumper.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ast_eval.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/binder.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/type_checker.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -503,6 +505,7 @@ distclean: distclean-am
 		-rm -f ./$(DEPDIR)/ast_dumper.Po
 	-rm -f ./$(DEPDIR)/ast_eval.Po
 	-rm -f ./$(DEPDIR)/binder.Po
+	-rm -f ./$(DEPDIR)/type_checker.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -551,6 +554,7 @@ maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/ast_dumper.Po
 	-rm -f ./$(DEPDIR)/ast_eval.Po
 	-rm -f ./$(DEPDIR)/binder.Po
+	-rm -f ./$(DEPDIR)/type_checker.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
