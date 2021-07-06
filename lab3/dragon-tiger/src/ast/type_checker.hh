@@ -13,18 +13,6 @@ namespace type_checker {
 // typedef std::unordered_map<Symbol, Decl *> scope_t;
 
 class TypeChecker : public ASTVisitor {
-  // std::vector<scope_t> scopes;
-  // std::vector<FunDecl *> functions;
-  // std::vector<Loop *> loops;
-  // std::unordered_set<Symbol> external_names;
-  // void push_scope();
-  // void pop_scope();
-  // scope_t &current_scope();
-  // void enter(Decl &);
-  // Decl &find(const location loc, const Symbol &name);
-  // void enter_primitive(const std::string &, const boost::optional<Symbol> &,
-  //                      const std::vector<Symbol> &);
-  // void set_parent_and_external_name(FunDecl &decl);
 
 public:
   TypeChecker();

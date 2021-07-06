@@ -193,7 +193,6 @@ void Binder::visit(VarDecl &decl) {
     decl.set_depth(scopes.size());
 
     if (auto expr = decl.get_expr()){
-        std::cout << "AYA"<< std::endl;
         expr->accept(*this);
     }
 

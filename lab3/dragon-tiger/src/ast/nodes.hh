@@ -433,6 +433,7 @@ class FunDecl : public Decl {
 public:
   // Public fields
   const bool is_external;
+  bool is_visited = false;
 
   // Constructor
   FunDecl(const location &_loc, const Symbol &_name,
@@ -513,6 +514,7 @@ class FunCall : public Expr {
 public:
   // Public fields
   const Symbol func_name;
+
 
   // Constructor
   FunCall(const location &_loc, const std::vector<Expr *> &_args,
