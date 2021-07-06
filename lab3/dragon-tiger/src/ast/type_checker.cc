@@ -32,7 +32,7 @@ void TypeChecker::visit(StringLiteral &literal) {
 void TypeChecker::visit(BinaryOperator &op) {
     op.get_left().accept(*this);
     op.get_right().accept(*this);
-    
+
     op.set_type(op.get_left().get_type());
 
     if(op.get_left().get_type() != op.get_right().get_type())
@@ -100,11 +100,11 @@ void TypeChecker::visit(FunDecl &decl) {
         return ;
         }
 
-    if(decl.is_visited){
-        std::cout << decl.name.get() << " deja visité, return !"<< std::endl;
+    if(decl.is_visited)//{
+        // std::cout << decl.name.get() << " deja visité, return !"<< std::endl;
         return ;
-        }
-    std::cout << " On entre dans  : "<<  decl.name.get() <<std::endl;
+        // }
+    // std::cout << " On entre dans  : "<<  decl.name.get() <<std::endl;
     decl.is_visited = true;
 
 

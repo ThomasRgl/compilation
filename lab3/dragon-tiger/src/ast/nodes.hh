@@ -428,12 +428,13 @@ class FunDecl : public Decl {
   Expr *expr;
   Symbol external_name = Symbol();
   FunDecl *parent = nullptr;
-  std::vector<VarDecl *> escaping_decls = std::vector<VarDecl *>();
+  // std::vector<VarDecl *> escaping_decls = std::vector<VarDecl *>();
 
 public:
   // Public fields
   const bool is_external;
   bool is_visited = false;
+  std::vector<VarDecl *> escaping_decls = std::vector<VarDecl *>();
 
   // Constructor
   FunDecl(const location &_loc, const Symbol &_name,
