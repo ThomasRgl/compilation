@@ -9,7 +9,7 @@ using utils::error;
 namespace irgen {
 
 IRGenerator::IRGenerator() : Builder(Context) {
-  Mod = llvm::make_unique<llvm::Module>("tiger", Context);
+  Mod = std::make_unique<llvm::Module>("tiger", Context);
 }
 
 llvm::Type *IRGenerator::llvm_type(const ast::Type ast_type) {

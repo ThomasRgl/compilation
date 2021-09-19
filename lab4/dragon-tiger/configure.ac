@@ -17,7 +17,7 @@ AC_REQUIRE_AUX_FILE([tap-driver.sh])
 AX_BOOST_BASE([1.48],, [AC_MSG_ERROR([dragon-tiger needs Boost, but it was not found in your system])])
 AX_BOOST_PROGRAM_OPTIONS
 
-AX_LLVM([3.8],[9.9],[all])
+AX_LLVM([3.8],[11.0],[all])
 
 
 AC_SUBST(LLVM_CPPFLAGS, $LLVM_CPPFLAGS)

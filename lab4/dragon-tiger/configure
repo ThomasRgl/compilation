@@ -6195,7 +6195,7 @@ x$ax_compare_version_B" | sed 's/^ *//' | sort -r | sed "s/x${ax_compare_version
                      -e 's/[^0-9]//g'`
 
 
-  ax_compare_version_B=`echo "9.9" | sed -e 's/\([0-9]*\)/Z\1Z/g' \
+  ax_compare_version_B=`echo "11.0" | sed -e 's/\([0-9]*\)/Z\1Z/g' \
                      -e 's/Z\([0-9]\)Z/Z0\1Z/g' \
                      -e 's/Z\([0-9][0-9]\)Z/Z0\1Z/g' \
                      -e 's/Z\([0-9][0-9][0-9]\)Z/Z0\1Z/g' \
@@ -6210,7 +6210,7 @@ x$ax_compare_version_B" | sed 's/^ *//' | sort | sed "s/x${ax_compare_version_A}
     if test "$ax_compare_version" = "true" ; then
     :
     else
-      as_fn_error $? "LLVM version up to 9.9 is supported" "$LINENO" 5
+      as_fn_error $? "LLVM version up to 11.0 is supported" "$LINENO" 5
 
   fi
 

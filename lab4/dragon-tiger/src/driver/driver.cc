@@ -52,6 +52,8 @@ int main(int argc, char **argv) {
     utils::error("parser failed");
   }
 
+
+
   FunDecl *main = nullptr;
   if (vm.count("bind") || vm.count("type") || vm.count("irgen")) {
     ast::binder::Binder binder;
